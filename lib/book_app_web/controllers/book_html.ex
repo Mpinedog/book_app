@@ -1,10 +1,20 @@
 defmodule BookAppWeb.BookHTML do
   use BookAppWeb, :html
 
-
   import BookAppWeb.CoreComponents
 
   embed_templates "book_html/*"
+
+  @doc """
+  Formats a number with thousand separators.
+  """
+  def format_number(number) when is_integer(number) do
+    number
+    |> Integer.to_string()
+    |> String.reverse()
+    |> String.replace(~r/(\d{3})(?=\d)/, "\\1,")
+    |> String.reverse()
+  end
 
   @doc """
   Renders a book form.

@@ -1,49 +1,124 @@
-<.header>
-  Book <%= @book.title %>
-  <:subtitle>Details about this book and its reviews.</:subtitle>
-  <:actions>
-    <.link href={~p"/books/#{@book}/edit"} class="btn btn-primary">
-      <.icon name="hero-pencil" /> Edit book
-    </.link>
-  </:actions>
-</.header>
-
-<.list>
-  <:item title="Title"><%= @book.title %></:item>
-  <:item title="Author"><%= @book.author.name %></:item>
-  <:item title="Published"><%= @book.published_on %></:item>
-  <:item title="Lifetime Sales"><%= @book.lifetime_sales %></:item>
-  <:item title="Summary"><%= @book.summary %></:item>
-</.list>
-
-<div class="mt-8">
+<div class="max-w-4xl mx-auto">
   <.header>
-    Reviews
-    <:subtitle>What readers are saying about this book</:subtitle>
+    <%= @book.title %>
+    <:subtitle>by <%= @book.author.name %></:subtitle>
+    <:actions>
+      <.link href={~p"/books/#{@book}/edit"} class="btn btn-primary">
+        <.icon name="hero-pencil" class="w-5 h-5 mr-2" /> Edit book
+      </.link>
+    </:actions>
   </.header>
-</div>
 
-<div class="mt-4 space-y-4">
-  <%= for review <- @book.reviews do %>
-    <div class="card bg-base-200">
-      <div class="card-body">
-        <div class="flex justify-between">
-          <div class="flex items-center gap-2">
-            <.icon name="hero-star" class="w-5 h-5 text-primary" />
-            <span class="text-lg font-semibold"><%= review.score %>/5</span>
-          </div>
-          <span class="text-sm text-base-content/70">
-            <%= review.inserted_at %>
-          </span>
+  <div class="grid grid-cols-1 gap-8 mt-8 lg:grid-cols-3">
+    <div class="lg:col-span-2">
+      <div class="prose max-w-none">
+        <h3 class="text-lg font-semibold mb-2">Summary</h3>
+        <p class="whitespace-pre-line"><%= @book.summary %></p>
+      </div>
+
+      <div class="divider my-8"></div>
+
+      <div>
+        <div class="mb-6">
+          <h3 class="text-lg font-semibold">Reviews</h3>
+          <p class="text-sm text-base-content/70">What readers are saying about this book</p>
         </div>
-        <p class="mt-2 text-base-content/80"><%= review.body %></p>
-        <div class="flex items-center gap-2 mt-4">
-          <.icon name="hero-hand-thumb-up" class="w-4 h-4" />
-          <span class="text-sm text-base-content/70"><%= review.upvotes %> found this helpful</span>
+
+        <div class="mt-6 space-y-6">
+          <%= if Enum.empty?(@book.reviews) do %>
+            <div class="text-center py-8">
+              <.icon name="hero-book-open" class="w-12 h-12 mx-auto text-base-content/30" />
+              <p class="mt-4 text-base-content/70">No reviews yet</p>
+            </div>
+          <% end %>
+
+          <%= for review <- @book.reviews do %>
+            <div class="card bg-base-200 hover:shadow-lg transition-shadow duration-200">
+              <div class="card-body">
+                <div class="flex justify-between">
+                  <div class="flex items-center gap-2">
+                    <%= for _i <- 1..review.score do %>
+                      <.icon name="hero-star" class="w-5 h-5 text-warning fill-current" />
+                    <% end %>
+                    <%= for _i <- (review.score + 1)..5 do %>
+                      <.icon name="hero-star" class="w-5 h-5 text-base-content/30" />
+                    <% end %>
+                  </div>
+                  <span class="text-sm text-base-content/70">
+                    <%= Calendar.strftime(review.inserted_at, "%B %d, %Y") %>
+                  </span>
+                </div>
+                <p class="mt-3 text-base-content/80 whitespace-pre-line"><%= review.body %></p>
+                <div class="flex items-center gap-2 mt-4">
+                  <.icon name="hero-hand-thumb-up" class="w-4 h-4 text-success" />
+                  <span class="text-sm text-base-content/70"><%= review.upvotes %> found this helpful</span>
+                </div>
+              </div>
+            </div>
+          <% end %>
         </div>
       </div>
     </div>
-  <% end %>
-</div>
 
-<.back navigate={~p"/books"}>Back to books</.back>
+    <div>
+      <div class="card bg-base-200">
+        <div class="card-body">
+          <h3 class="card-title text-base-content/80 text-sm uppercase tracking-wide mb-4">Book Details</h3>
+          
+          <div class="space-y-4">
+            <div>
+              <p class="text-sm text-base-content/70">Published</p>
+              <p class="font-medium"><%= Calendar.strftime(@book.published_on, "%B %d, %Y") %></p>
+            </div>
+
+            <div>
+              <p class="text-sm text-base-content/70">Total Sales</p>
+              <p class="font-medium"><%= format_number(@book.lifetime_sales) %> copies</p>
+            </div>
+
+            <div>
+              <p class="text-sm text-base-content/70">Reviews</p>
+              <div class="flex items-center gap-2">
+                <p class="font-medium"><%= length(@book.reviews) %> total</p>
+                <%= if @book.reviews != [] do %>
+                  <span class="text-base-content/70">·</span>
+                  <div class="flex items-center gap-1">
+                    <.icon name="hero-star" class="w-4 h-4 text-warning fill-current" />
+                    <p class="font-medium">
+                      <%= 
+                        @book.reviews 
+                        |> Enum.map(& &1.score) 
+                        |> Enum.sum() 
+                        |> Kernel./(length(@book.reviews)) 
+                        |> Float.round(1)
+                      %>/5
+                    </p>
+                  </div>
+                <% end %>
+              </div>
+            </div>
+
+            <div>
+              <p class="text-sm text-base-content/70">Yearly Sales</p>
+              <div class="mt-2">
+                <%= for sale <- Enum.sort_by(@book.yearly_sales, & &1.year, :desc) do %>
+                  <div class="flex justify-between items-center py-1">
+                    <span class="text-sm"><%= sale.year %></span>
+                    <span class="font-medium"><%= format_number(sale.sales) %></span>
+                  </div>
+                <% end %>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="mt-16">
+    <.back navigate={~p"/books"}>
+      <.icon name="hero-arrow-left" class="w-4 h-4 mr-1" />
+      Back to books
+    </.back>
+  </div>
+</div>

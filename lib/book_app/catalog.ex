@@ -14,7 +14,7 @@ defmodule BookApp.Catalog do
     Book
     |> order_by([b], b.title)
     |> Repo.all()
-    |> Repo.preload(:author)
+    |> Repo.preload([:author, :yearly_sales])
   end
 
   @doc """
@@ -24,7 +24,7 @@ defmodule BookApp.Catalog do
   def get_book(id) do
     Book
     |> Repo.get(id)
-    |> Repo.preload([:author, :reviews])
+    |> Repo.preload([:author, :reviews, :yearly_sales])
   end
 
   @doc """
@@ -34,7 +34,7 @@ defmodule BookApp.Catalog do
   def get_book!(id) do
     Book
     |> Repo.get!(id)
-    |> Repo.preload([:author, :reviews])
+    |> Repo.preload([:author, :reviews, :yearly_sales])
   end
 
   @doc """
