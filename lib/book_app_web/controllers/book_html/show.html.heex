@@ -1,0 +1,49 @@
+<.header>
+  Book <%= @book.title %>
+  <:subtitle>Details about this book and its reviews.</:subtitle>
+  <:actions>
+    <.link href={~p"/books/#{@book}/edit"} class="btn btn-primary">
+      <.icon name="hero-pencil" /> Edit book
+    </.link>
+  </:actions>
+</.header>
+
+<.list>
+  <:item title="Title"><%= @book.title %></:item>
+  <:item title="Author"><%= @book.author.name %></:item>
+  <:item title="Published"><%= @book.published_on %></:item>
+  <:item title="Lifetime Sales"><%= @book.lifetime_sales %></:item>
+  <:item title="Summary"><%= @book.summary %></:item>
+</.list>
+
+<div class="mt-8">
+  <.header>
+    Reviews
+    <:subtitle>What readers are saying about this book</:subtitle>
+  </.header>
+</div>
+
+<div class="mt-4 space-y-4">
+  <%= for review <- @book.reviews do %>
+    <div class="card bg-base-200">
+      <div class="card-body">
+        <div class="flex justify-between">
+          <div class="flex items-center gap-2">
+            <.icon name="hero-star" class="w-5 h-5 text-primary" />
+            <span class="text-lg font-semibold"><%= review.score %>/5</span>
+          </div>
+          <span class="text-sm text-base-content/70">
+            <%= review.inserted_at %>
+          </span>
+        </div>
+        <p class="mt-2 text-base-content/80"><%= review.body %></p>
+        <div class="flex items-center gap-2 mt-4">
+          <.icon name="hero-hand-thumb-up" class="w-4 h-4" />
+          <span class="text-sm text-base-content/70"><%= review.upvotes %> found this helpful</span>
+        </div>
+      </div>
+    </div>
+  <% end %>
+</div>
+
+<.back navigate={~p"/books"}>Back to books</.back>

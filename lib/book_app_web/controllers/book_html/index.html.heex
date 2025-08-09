@@ -1,0 +1,26 @@
+<.header>
+  Books
+  <:actions>
+    <.link href={~p"/books/new"} class="btn btn-primary">
+      <.icon name="hero-plus" /> New Book
+    </.link>
+  </:actions>
+</.header>
+
+<.table id="books" rows={@books}>
+  <:col :let={book} label="Title"><%= book.title %></:col>
+  <:col :let={book} label="Author"><%= book.author.name %></:col>
+  <:col :let={book} label="Published"><%= book.published_on %></:col>
+  <:col :let={book} label="Sales"><%= book.lifetime_sales %></:col>
+  <:action :let={book}>
+    <.link navigate={~p"/books/#{book}"} class="btn btn-sm btn-ghost">View</.link>
+  </:action>
+  <:action :let={book}>
+    <.link navigate={~p"/books/#{book}/edit"} class="btn btn-sm btn-ghost">Edit</.link>
+  </:action>
+  <:action :let={book}>
+    <.link href={~p"/books/#{book}"} method="delete" data-confirm="Are you sure?" class="btn btn-sm btn-error">
+      Delete
+    </.link>
+  </:action>
+</.table>

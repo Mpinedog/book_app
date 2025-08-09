@@ -6,7 +6,8 @@
 # - ≥ 5 years of sales per book (contiguos desde el año de publicación)
 
 alias BookApp.Repo
-alias BookApp.Library.{Author, Book, Review, YearlySale}
+alias BookApp.Authors.Author
+alias BookApp.Catalog.{Book, Review, YearlySale}
 
 # Asegura Faker
 {:ok, _} = Application.ensure_all_started(:faker)
