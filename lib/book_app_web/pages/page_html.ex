@@ -6,5 +6,5 @@ defmodule BookAppWeb.PageHTML do
   """
   use BookAppWeb, :html
 
-  embed_templates "page_html/*"
+  embed_templates "templates/*"
 end

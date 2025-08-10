@@ -3,7 +3,7 @@ defmodule BookAppWeb.BookHTML do
 
   import BookAppWeb.CoreComponents
 
-  embed_templates "book_html/*"
+  embed_templates "templates/*"
 
   @doc """
   Formats a number with thousand separators.

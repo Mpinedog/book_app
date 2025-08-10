@@ -1,3 +1,4 @@
+
 defmodule BookApp.Catalog do
   @moduledoc """
   The Catalog context.
