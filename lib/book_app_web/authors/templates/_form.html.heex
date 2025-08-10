@@ -1,0 +1,19 @@
+<.form for={@changeset} action={@action} method="post">
+  <div>
+    <label>Name</label>
+    <.input field={@changeset[:name]} />
+  </div>
+  <div>
+    <label>Description</label>
+    <.input field={@changeset[:description]} />
+  </div>
+  <div>
+    <label>Birth date</label>
+    <.input field={@changeset[:birth_date]} type="date" />
+  </div>
+  <div>
+    <label>Country</label>
+    <.input field={@changeset[:country]} />
+  </div>
+  <button type="submit">Save</button>
+</.form>

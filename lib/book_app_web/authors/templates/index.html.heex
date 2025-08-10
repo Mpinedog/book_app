@@ -1,0 +1,31 @@
+<.header>
+  Authors
+  <:subtitle>Meet the minds behind the books</:subtitle>
+  <:actions>
+    <.link href={~p"/authors/new"} class="btn btn-primary">
+      <.icon name="hero-plus" class="w-5 h-5 mr-2" /> New Author
+    </.link>
+  </:actions>
+</.header>
+
+<div class="grid grid-cols-1 gap-6 mt-8 sm:grid-cols-2 lg:grid-cols-3">
+  <%= for author <- @authors do %>
+    <div class="card bg-base-100 shadow-xl hover:shadow-2xl transition-shadow duration-200">
+      <div class="card-body">
+        <h2 class="card-title text-primary"><%= author.name %></h2>
+        <p class="text-base-content/70"><%= author.country %></p>
+        <div class="mt-4 flex gap-2 justify-end">
+          <.link navigate={~p"/authors/#{author.id}"} class="btn btn-sm btn-ghost">
+            <.icon name="hero-eye" class="w-4 h-4 mr-1" /> View
+          </.link>
+          <.link navigate={~p"/authors/#{author.id}/edit"} class="btn btn-sm btn-ghost">
+            <.icon name="hero-pencil" class="w-4 h-4 mr-1" /> Edit
+          </.link>
+        </div>
+      </div>
+    </div>
+  <% end %>
+  <%= if Enum.empty?(@authors) do %>
+    <div class="col-span-full text-center text-base-content/50 py-12">No authors found.</div>
+  <% end %>
+</div>
