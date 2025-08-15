@@ -63,4 +63,14 @@ defmodule BookAppWeb.BookController do
     |> put_flash(:info, "Book deleted successfully.")
     |> redirect(to: ~p"/books")
   end
+
+  def top_books(conn, _params) do
+    books = Catalog.list_top_books()
+    render(conn, :top_books, books: books)
+  end
+
+  def top_selling_books(conn, _params) do
+    books = Catalog.list_top_selling_books()
+    render(conn, :top_selling_books, books: books)
+  end
 end

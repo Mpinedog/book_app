@@ -1,0 +1,166 @@
+<div class="bg-base-100 min-h-screen">
+  <div class="container mx-auto px-4 py-8">
+    <!-- Header -->
+    <div class="text-center mb-12">
+      <h1 class="text-4xl font-bold text-base-content mb-4">
+        Top 10 Rated Books
+      </h1>
+      <p class="text-lg text-base-content/70">
+        Discover the highest-rated books in our collection
+      </p>
+    </div>
+
+    <!-- Books Grid -->
+    <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+      <%= for {book, index} <- Enum.with_index(@books, 1) do %>
+        <div class="card bg-base-200 shadow-xl hover:shadow-2xl transition-shadow duration-300">
+          <!-- Rank Badge -->
+          <div class="absolute top-4 left-4 z-10">
+            <div class="badge badge-primary badge-lg font-bold">
+              #<%= index %>
+            </div>
+          </div>
+          
+          <!-- Book Cover Placeholder -->
+          <figure class="px-4 pt-6">
+            <div class="w-full h-48 bg-primary/10 rounded-lg flex items-center justify-center">
+              <.icon name="hero-book-open" class="h-16 w-16 text-primary"/>
+            </div>
+          </figure>
+          
+          <!-- Book Details -->
+          <div class="card-body">
+            <h2 class="card-title text-base-content line-clamp-2">
+              <%= book.title %>
+            </h2>
+            
+            <p class="text-sm text-base-content/70 mb-2">
+              by <%= book.author.name %>
+            </p>
+            
+            <!-- Rating Display -->
+            <div class="flex items-center gap-2 mb-2">
+                <% avg_rating = average_rating(book) %>
+            <div class="rating rating-sm">
+                <%= if avg_rating do %>
+                <%= for star <- 1..5 do %>
+                    <input type="radio" 
+                        class={["mask mask-star-2", 
+                                if(star <= round(avg_rating), 
+                                    do: "bg-orange-400", 
+                                    else: "bg-gray-300")]} 
+                        disabled />
+                <% end %>
+                <% else %>
+                <%= for star <- 1..5 do %>
+                    <input type="radio" class="mask mask-star-2 bg-gray-300" disabled />
+                <% end %>
+                <% end %>
+            </div>
+            <span class="text-sm text-base-content/70">
+                <%= if avg_rating do %>
+                (<%= Float.round(avg_rating, 1) %>)
+                <% else %>
+                (No ratings)
+                <% end %>
+            </span>
+            </div>
+            
+            <!-- Reviews Display -->
+            <div class="space-y-3 mb-4">
+              <% highest_review = highest_rated_review(book) %>
+              <% lowest_review = lowest_rated_review(book) %>
+              
+              <%= if highest_review do %>
+                <div class="bg-green-50 border-l-4 border-green-400 p-3 rounded">
+                  <div class="flex items-center justify-between mb-1">
+                    <div class="flex items-center gap-1">
+                      <div class="flex">
+                        <%= for star <- 1..5 do %>
+                          <.icon name="hero-star-solid" 
+                                 class={["h-3 w-3", 
+                                        if(star <= highest_review.score, 
+                                          do: "text-yellow-400", 
+                                          else: "text-gray-300")]} />
+                        <% end %>
+                      </div>
+                      <span class="text-xs text-green-600">
+                        (<%= highest_review.upvotes || 0 %> upvotes)
+                      </span>
+                    </div>
+                  </div>
+                  <p class="text-xs text-green-700 line-clamp-2">
+                    "<%= String.slice(highest_review.body || "", 0, 80) %><%= if String.length(highest_review.body || "") > 80, do: "..." %>"
+                  </p>
+                </div>
+              <% end %>
+              
+              <%= if lowest_review && lowest_review != highest_review do %>
+                <div class="bg-red-50 border-l-4 border-red-400 p-3 rounded">
+                  <div class="flex items-center justify-between mb-1">
+                    <div class="flex items-center gap-1">
+                      <div class="flex">
+                        <%= for star <- 1..5 do %>
+                          <.icon name="hero-star-solid" 
+                                 class={["h-3 w-3", 
+                                        if(star <= lowest_review.score, 
+                                          do: "text-yellow-400", 
+                                          else: "text-gray-300")]} />
+                        <% end %>
+                      </div>
+                      <span class="text-xs text-red-600">
+                        (<%= lowest_review.upvotes || 0 %> upvotes)
+                      </span>
+                    </div>
+                  </div>
+                  <p class="text-xs text-red-700 line-clamp-2">
+                    "<%= String.slice(lowest_review.body || "", 0, 80) %><%= if String.length(lowest_review.body || "") > 80, do: "..." %>"
+                  </p>
+                </div>
+              <% end %>
+              
+              <%= if !highest_review && !lowest_review do %>
+                <div class="text-center py-4 text-gray-500">
+                  <.icon name="hero-chat-bubble-left-ellipsis" class="h-8 w-8 mx-auto mb-2 text-gray-300"/>
+                  <p class="text-xs">No reviews yet</p>
+                </div>
+              <% end %>
+            </div>
+            
+            <!-- Publication Info -->
+            <div class="text-xs text-base-content/50 mb-4">
+              Published: <%= Calendar.strftime(book.published_on, "%B %Y") %>
+            </div>
+            
+            
+            <!-- Actions -->
+            <div class="card-actions justify-end">
+              <.link navigate={~p"/books/#{book}"} class="btn btn-primary btn-sm">
+                View Details
+              </.link>
+            </div>
+          </div>
+        </div>
+      <% end %>
+    </div>
+
+    <!-- Empty State -->
+    <%= if @books == [] do %>
+      <div class="text-center py-16">
+        <.icon name="hero-book-open" class="h-24 w-24 text-base-content/30 mx-auto mb-4"/>
+        <h3 class="text-xl font-semibold text-base-content mb-2">No books found</h3>
+        <p class="text-base-content/70 mb-6">There are no books to display at the moment.</p>
+        <.link navigate={~p"/books"} class="btn btn-primary">
+          Browse All Books
+        </.link>
+      </div>
+    <% end %>
+
+    <div class="text-center mt-12">
+      <.link navigate={~p"/"} class="btn btn-outline">
+        <.icon name="hero-arrow-left" class="h-4 w-4 mr-2"/>
+        Back to Home
+      </.link>
+    </div>
+  </div>
+</div>

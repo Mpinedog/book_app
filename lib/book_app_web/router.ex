@@ -21,6 +21,10 @@ defmodule BookAppWeb.Router do
 
     resources "/books", BookController
     resources "/authors", AuthorController
+
+    get "/top_books", BookController, :top_books
+    get "/top_selling_books", BookController, :top_selling_books
+
   end
 
   # Other scopes may use custom stacks.

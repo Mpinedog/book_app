@@ -35,11 +35,15 @@
                 <ul class="mt-4 space-y-4">
                   <li class="flex items-center gap-4">
                     <.icon name="hero-book-open" class="h-6 w-6 text-primary"/>
-                    <span>Top 10 rated books</span>
+                    <.link navigate={~p"/top_books"} class="btn btn-primary">
+                      Top 10 rated books
+                    </.link>
                   </li>
                   <li class="flex items-center gap-4">
                     <.icon name="hero-star" class="h-6 w-6 text-primary"/>
-                    <span>Latest reviews</span>
+                    <.link navigate={~p"/top_selling_books"} class="btn btn-primary">
+                      Top 50 selling books
+                    </.link>
                   </li>
                   <li class="flex items-center gap-4">
                     <.icon name="hero-chart-bar" class="h-6 w-6 text-primary"/>
