@@ -1,0 +1,148 @@
+<div class="bg-base-100 min-h-screen">
+  <div class="container mx-auto px-4 py-8">
+    <!-- Header -->
+    <div class="text-center mb-12">
+      <h1 class="text-4xl font-bold text-base-content mb-4">
+        Top 50 Best-Selling Books of All Time
+      </h1>
+      <p class="text-lg text-base-content/70">
+        The highest-selling books and their commercial success stories
+      </p>
+    </div>
+
+    <!-- Books List -->
+    <div class="space-y-4">
+      <%= for {book, index} <- Enum.with_index(@books, 1) do %>
+        <div class="card bg-base-200 shadow-lg hover:shadow-xl transition-shadow duration-300">
+          <div class="card-body">
+            <div class="flex flex-col lg:flex-row lg:items-center gap-6">
+              
+              <!-- Rank and Book Info -->
+              <div class="flex items-start gap-4 flex-1">
+                <!-- Rank Badge -->
+                <div class="flex-shrink-0">
+                  <div class={[
+                    "badge badge-lg font-bold text-white",
+                    cond do
+                      index <= 3 -> "bg-gradient-to-r from-yellow-400 to-yellow-600"
+                      index <= 10 -> "bg-gradient-to-r from-gray-400 to-gray-600"
+                      true -> "badge-primary"
+                    end
+                  ]}>
+                    #<%= index %>
+                  </div>
+                </div>
+                
+                <!-- Book Cover Placeholder -->
+                <div class="flex-shrink-0">
+                  <div class="w-16 h-20 bg-primary/10 rounded flex items-center justify-center">
+                    <.icon name="hero-book-open" class="h-8 w-8 text-primary"/>
+                  </div>
+                </div>
+                
+                <!-- Book Details -->
+                <div class="flex-1 min-w-0">
+                  <h3 class="text-lg font-semibold text-base-content mb-1 truncate">
+                    <%= book.title %>
+                  </h3>
+                  <p class="text-sm text-base-content/70 mb-2">
+                    by <%= book.author.name %>
+                  </p>
+                  <p class="text-xs text-base-content/50">
+                    Published: <%= Calendar.strftime(book.published_on, "%B %Y") %>
+                  </p>
+                  
+                  <!-- Top 5 Badge -->
+                  <%= if was_top_5_at_publication?(book) do %>
+                    <div class="mt-2">
+                      <span class="badge badge-success badge-sm">
+                        <.icon name="hero-trophy" class="h-3 w-3 mr-1"/>
+                        Top 5 at Launch
+                      </span>
+                    </div>
+                  <% end %>
+                </div>
+              </div>
+              
+              <!-- Sales Statistics -->
+              <div class="grid grid-cols-2 lg:grid-cols-3 gap-4 lg:w-96">
+                <!-- Book Sales -->
+                <div class="stat bg-base-100 rounded-lg p-3">
+                  <div class="stat-title text-xs">Book Sales</div>
+                  <div class="stat-value text-sm text-primary">
+                    <%= format_number(book.lifetime_sales) %>
+                  </div>
+                  <div class="stat-desc text-xs">copies sold</div>
+                </div>
+                
+                <!-- Author Total Sales -->
+                <div class="stat bg-base-100 rounded-lg p-3">
+                  <div class="stat-title text-xs">Author Total</div>
+                  <div class="stat-value text-sm text-secondary">
+                    <%= format_number(author_total_sales(book.author)) %>
+                  </div>
+                  <div class="stat-desc text-xs">all books</div>
+                </div>
+                
+                <!-- Market Share -->
+                <div class="stat bg-base-100 rounded-lg p-3 col-span-2 lg:col-span-1">
+                  <div class="stat-title text-xs">Author Share</div>
+                  <div class="stat-value text-sm text-accent">
+                    <%= author_book_percentage(book) %>%
+                  </div>
+                  <div class="stat-desc text-xs">of author's sales</div>
+                </div>
+              </div>
+              
+              <!-- Action Button -->
+              <div class="flex-shrink-0">
+                <.link navigate={~p"/books/#{book}"} class="btn btn-primary btn-sm">
+                  View Details
+                </.link>
+              </div>
+            </div>
+          </div>
+        </div>
+      <% end %>
+    </div>
+
+    <!-- Summary Statistics -->
+    <div class="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6">
+      
+      <div class="stat bg-base-200 rounded-lg">
+        <div class="stat-title">Combined Sales</div>
+        <div class="stat-value text-secondary">
+          <%= format_number(total_combined_sales(@books)) %>
+        </div>
+        <div class="stat-desc">copies sold</div>
+      </div>
+      
+      <div class="stat bg-base-200 rounded-lg">
+        <div class="stat-title">Top 5 at Launch</div>
+        <div class="stat-value text-accent">
+          <%= count_top_5_books(@books) %>
+        </div>
+        <div class="stat-desc">immediate successes</div>
+      </div>
+    </div>
+
+    <!-- Empty State -->
+    <%= if @books == [] do %>
+      <div class="text-center py-16">
+        <.icon name="hero-chart-bar" class="h-24 w-24 text-base-content/30 mx-auto mb-4"/>
+        <h3 class="text-xl font-semibold text-base-content mb-2">No sales data found</h3>
+        <p class="text-base-content/70 mb-6">There are no sales records to display at the moment.</p>
+        <.link navigate={~p"/books"} class="btn btn-primary">
+          Browse All Books
+        </.link>
+      </div>
+    <% end %>
+
+    <div class="text-center mt-12">
+      <.link navigate={~p"/"} class="btn btn-outline">
+        <.icon name="hero-arrow-left" class="h-4 w-4 mr-2"/>
+        Back to Home
+      </.link>
+    </div>
+  </div>
+</div>
