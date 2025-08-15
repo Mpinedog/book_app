@@ -8,7 +8,10 @@
     <.link navigate={~p"/authors"} class="btn btn-ghost">Back</.link>
     <form action={~p"/authors/#{@author.id}"} method="post" class="inline">
       <input type="hidden" name="_method" value="delete" />
-      <button type="submit" class="btn btn-error ml-2"><.icon name="hero-trash" class="w-4 h-4 mr-1" /> Delete</button>
+      <input type="hidden" name="_csrf_token" value={get_csrf_token()} />
+      <button type="submit" class="btn btn-error ml-2" data-confirm="Are you sure?">
+        <.icon name="hero-trash" class="w-4 h-4 mr-1" /> Delete
+      </button>
     </form>
   </:actions>
 </.header>

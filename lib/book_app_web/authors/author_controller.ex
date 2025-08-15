@@ -16,7 +16,7 @@ defmodule BookAppWeb.AuthorController do
 
   def new(conn, _params) do
     changeset = Author.changeset(%Author{}, %{})
-    render(conn, :new, changeset: changeset)
+    render(conn, :new, changeset: changeset, action: ~p"/authors")
   end
 
   def create(conn, %{"author" => author_params}) do
