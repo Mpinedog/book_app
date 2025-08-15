@@ -21,6 +21,7 @@ defmodule BookAppWeb.Router do
 
     resources "/books", BookController
     resources "/authors", AuthorController
+    resources "/reviews", ReviewController
   end
 
   # Other scopes may use custom stacks.

@@ -1,0 +1,53 @@
+<.header>
+  Review Details
+  <:subtitle>Review for "<%= @review.book.title %>"</:subtitle>
+  <:actions>
+    <.link navigate={~p"/reviews/#{@review.id}/edit"} class="btn btn-primary">
+      <.icon name="hero-pencil" class="w-4 h-4 mr-1" /> Edit
+    </.link>
+    <.link navigate={~p"/reviews"} class="btn btn-ghost">Back</.link>
+    <form action={~p"/reviews/#{@review.id}"} method="post" class="inline">
+      <input type="hidden" name="_method" value="delete" />
+      <input type="hidden" name="_csrf_token" value={get_csrf_token()} />
+      <button type="submit" class="btn btn-error ml-2" data-confirm="Are you sure?">
+        <.icon name="hero-trash" class="w-4 h-4 mr-1" /> Delete
+      </button>
+    </form>
+  </:actions>
+</.header>
+
+<div class="max-w-2xl mx-auto mt-8 card bg-base-100 shadow-xl">
+  <div class="card-body">
+    <div class="mb-6">
+      <h3 class="text-xl font-semibold text-primary mb-2">
+        <%= @review.book.title %>
+      </h3>
+      <div class="rating rating-lg">
+        <%= for i <- 1..5 do %>
+          <input 
+            type="radio" 
+            class={"mask mask-star-2 bg-orange-400 #{if i <= @review.score, do: "", else: "opacity-30"}"} 
+            disabled 
+          />
+        <% end %>
+        <span class="ml-3 text-lg">(<%= @review.score %>/5)</span>
+      </div>
+    </div>
+    
+    <%= if @review.body do %>
+      <div class="mb-4">
+        <h4 class="font-medium text-base-content/70 mb-2">Review:</h4>
+        <p class="text-base-content leading-relaxed"><%= @review.body %></p>
+      </div>
+    <% end %>
+    
+    <div class="flex justify-between items-center pt-4 border-t">
+      <div class="text-base-content/70">
+        👍 <%= @review.upvotes || 0 %> upvotes
+      </div>
+      <div class="text-sm text-base-content/50">
+        Created: <%= Calendar.strftime(@review.inserted_at, "%B %d, %Y") %>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,12 @@
+<.header>
+  Edit Review
+  <:subtitle>Update your review</:subtitle>
+  <:actions>
+    <.link navigate={~p"/reviews/#{@review.id}"} class="btn btn-ghost">Show</.link>
+    <.link navigate={~p"/reviews"} class="btn btn-ghost">Back</.link>
+  </:actions>
+</.header>
+
+<.review_form changeset={@changeset} action={@action} books={@books} />
+
+<.back navigate={~p"/reviews"}>Back to reviews</.back>

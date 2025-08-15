@@ -1,0 +1,54 @@
+<.header>
+  Reviews
+  <:subtitle>What readers think about our books</:subtitle>
+  <:actions>
+    <.link href={~p"/reviews/new"} class="btn btn-primary">
+      <.icon name="hero-plus" class="w-5 h-5 mr-2" /> New Review
+    </.link>
+  </:actions>
+</.header>
+
+<div class="grid grid-cols-1 gap-6 mt-8">
+  <%= for review <- @reviews do %>
+    <div class="card bg-base-100 shadow-xl">
+      <div class="card-body">
+        <div class="flex justify-between items-start">
+          <div class="flex-1">
+            <h3 class="text-lg font-semibold text-primary">
+              <%= review.book.title %>
+            </h3>
+            <div class="rating rating-sm mt-1">
+              <%= for i <- 1..5 do %>
+                <input 
+                  type="radio" 
+                  class={"mask mask-star-2 bg-orange-400 #{if i <= review.score, do: "", else: "opacity-30"}"} 
+                  disabled 
+                />
+              <% end %>
+              <span class="ml-2 text-sm text-base-content/70">(<%= review.score %>/5)</span>
+            </div>
+          </div>
+          <div class="text-sm text-base-content/70">
+            👍 <%= review.upvotes || 0 %> upvotes
+          </div>
+        </div>
+        
+        <%= if review.body do %>
+          <p class="mt-3 text-base-content/80"><%= review.body %></p>
+        <% end %>
+        
+        <div class="flex gap-2 justify-end mt-4">
+          <.link navigate={~p"/reviews/#{review.id}"} class="btn btn-sm btn-ghost">
+            <.icon name="hero-eye" class="w-4 h-4 mr-1" /> View
+          </.link>
+          <.link navigate={~p"/reviews/#{review.id}/edit"} class="btn btn-sm btn-ghost">
+            <.icon name="hero-pencil" class="w-4 h-4 mr-1" /> Edit
+          </.link>
+        </div>
+      </div>
+    </div>
+  <% end %>
+  <%= if Enum.empty?(@reviews) do %>
+    <div class="text-center text-base-content/50 py-12">No reviews found.</div>
+  <% end %>
+</div>

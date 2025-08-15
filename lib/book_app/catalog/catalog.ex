@@ -7,6 +7,7 @@ defmodule BookApp.Catalog do
   import Ecto.Query, warn: false
   alias BookApp.Repo
   alias BookApp.Catalog.Book
+  alias BookApp.Catalog.Review
 
   @doc """
   Returns the list of books.
@@ -68,5 +69,59 @@ defmodule BookApp.Catalog do
   """
   def change_book(%Book{} = book, attrs \\ %{}) do
     Book.changeset(book, attrs)
+  end
+
+  ## Reviews
+
+  @doc """
+  Returns the list of reviews.
+  """
+  def list_reviews do
+    Review
+    |> order_by([r], desc: r.inserted_at)
+    |> Repo.all()
+    |> Repo.preload([:book])
+  end
+
+  @doc """
+  Gets a single review.
+  Raises if the Review does not exist.
+  """
+  def get_review!(id) do
+    Review
+    |> Repo.get!(id)
+    |> Repo.preload([:book])
+  end
+
+  @doc """
+  Creates a review.
+  """
+  def create_review(attrs \\ %{}) do
+    %Review{}
+    |> Review.changeset(attrs)
+    |> Repo.insert()
+  end
+
+  @doc """
+  Updates a review.
+  """
+  def update_review(%Review{} = review, attrs) do
+    review
+    |> Review.changeset(attrs)
+    |> Repo.update()
+  end
+
+  @doc """
+  Deletes a review.
+  """
+  def delete_review(%Review{} = review) do
+    Repo.delete(review)
+  end
+
+  @doc """
+  Returns an `%Ecto.Changeset{}` for tracking review changes.
+  """
+  def change_review(%Review{} = review, attrs \\ %{}) do
+    Review.changeset(review, attrs)
   end
 end
