@@ -78,10 +78,7 @@
                       <div class="flex">
                         <%= for star <- 1..5 do %>
                           <.icon name="hero-star-solid" 
-                                 class={["h-3 w-3", 
-                                        if(star <= highest_review.score, 
-                                          do: "text-yellow-400", 
-                                          else: "text-gray-300")]} />
+                                 class={"h-3 w-3 #{if star <= highest_review.score, do: "text-yellow-400", else: "text-gray-300"}"} />
                         <% end %>
                       </div>
                       <span class="text-xs text-green-600">
@@ -102,10 +99,7 @@
                       <div class="flex">
                         <%= for star <- 1..5 do %>
                           <.icon name="hero-star-solid" 
-                                 class={["h-3 w-3", 
-                                        if(star <= lowest_review.score, 
-                                          do: "text-yellow-400", 
-                                          else: "text-gray-300")]} />
+                                 class={"h-3 w-3 #{if star <= lowest_review.score, do: "text-yellow-400", else: "text-gray-300"}"} />
                         <% end %>
                       </div>
                       <span class="text-xs text-red-600">

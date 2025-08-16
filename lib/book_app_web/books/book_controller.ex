@@ -73,4 +73,10 @@ defmodule BookAppWeb.BookController do
     books = Catalog.list_top_selling_books()
     render(conn, :top_selling_books, books: books)
   end
+
+  def search(conn, params) do
+    search_term = params["search_term"] || ""
+    books = if search_term != "", do: Catalog.search_books_by_description(search_term), else: []
+    render(conn, :search, books: books, search_term: search_term)
+  end
 end

@@ -1,0 +1,136 @@
+<.header>
+  Search Books
+  <:subtitle>Find books by searching their descriptions</:subtitle>
+</.header>
+
+<div class="mt-8">
+  <!-- Search Form -->
+  <div class="max-w-2xl mx-auto">
+    <form action={~p"/books/search"} method="get" class="space-y-6">
+      <div class="form-control">
+        <label class="label">
+          <span class="label-text font-medium">Search in book descriptions</span>
+        </label>
+        <div class="flex gap-2">
+          <input
+            type="text"
+            name="search_term"
+            value={@search_term}
+            placeholder="Enter keywords to search in book descriptions..."
+            class="input input-bordered flex-1"
+            required
+          />
+          <button type="submit" class="btn btn-primary">
+            <.icon name="hero-magnifying-glass" class="w-4 h-4 mr-1" />
+            Search
+          </button>
+        </div>
+        <label class="label">
+          <span class="label-text-alt text-base-content/60">
+            Search for books containing specific words or phrases in their descriptions
+          </span>
+        </label>
+      </div>
+    </form>
+  </div>
+
+  <!-- Search Results -->
+  <%= if @search_term != "" do %>
+    <div class="mt-12">
+      <div class="flex items-center justify-between mb-6">
+        <h2 class="text-2xl font-bold text-base-content">
+          Search Results
+          <%= if length(@books) > 0 do %>
+            <span class="text-sm font-normal text-base-content/70">
+              (<%= length(@books) %> book<%= if length(@books) != 1, do: "s" %> found)
+            </span>
+          <% end %>
+        </h2>
+        <%= if @search_term != "" do %>
+          <.link navigate={~p"/books/search"} class="btn btn-ghost btn-sm">
+            Clear Search
+          </.link>
+        <% end %>
+      </div>
+
+      <%= if length(@books) > 0 do %>
+        <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          <%= for book <- @books do %>
+            <div class="card bg-base-100 shadow-xl hover:shadow-2xl transition-shadow duration-200">
+              <div class="card-body">
+                <h2 class="card-title text-primary">
+                  <.link navigate={~p"/books/#{book}"} class="hover:underline">
+                    <%= book.title %>
+                  </.link>
+                </h2>
+                
+                <p class="text-sm text-base-content/70 mb-2">
+                  by <span class="font-medium"><%= book.author.name %></span>
+                </p>
+
+                <p class="text-sm text-base-content/80 line-clamp-3">
+                  <%= book.summary %>
+                </p>
+
+                <div class="mt-4 space-y-2">
+                  <div class="flex items-center gap-2">
+                    <.icon name="hero-calendar" class="w-4 h-4 text-base-content/70" />
+                    <span class="text-sm">Published: <%= book.published_on %></span>
+                  </div>
+                  <%= if book.lifetime_sales do %>
+                    <div class="flex items-center gap-2">
+                      <.icon name="hero-chart-bar" class="w-4 h-4 text-base-content/70" />
+                      <span class="text-sm">Sales: <%= book.lifetime_sales |> to_string() |> String.replace(~r/(\d)(?=(\d{3})+(?!\d))/, "\\1,") %></span>
+                    </div>
+                  <% end %>
+                </div>
+
+                <div class="card-actions justify-end mt-4">
+                  <.link navigate={~p"/books/#{book}"} class="btn btn-sm btn-primary">
+                    <.icon name="hero-eye" class="w-4 h-4 mr-1" /> View Details
+                  </.link>
+                </div>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      <% else %>
+        <!-- No Results -->
+        <div class="text-center py-16">
+          <.icon name="hero-magnifying-glass" class="h-24 w-24 text-base-content/30 mx-auto mb-4"/>
+          <h3 class="text-xl font-semibold text-base-content mb-2">No books found</h3>
+          <p class="text-base-content/70 mb-6">
+            No books match your search for "<%= @search_term %>". Try different keywords.
+          </p>
+          <div class="space-x-4">
+            <.link navigate={~p"/books/search"} class="btn btn-outline">
+              Try Another Search
+            </.link>
+            <.link navigate={~p"/books"} class="btn btn-primary">
+              Browse All Books
+            </.link>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  <% else %>
+    <!-- Initial State -->
+    <div class="text-center py-16">
+      <.icon name="hero-book-open" class="h-24 w-24 text-base-content/30 mx-auto mb-4"/>
+      <h3 class="text-xl font-semibold text-base-content mb-2">Search Our Book Collection</h3>
+      <p class="text-base-content/70 mb-6">
+        Enter keywords above to find books whose descriptions contain the words you're looking for.
+      </p>
+      <.link navigate={~p"/books"} class="btn btn-outline">
+        Browse All Books
+      </.link>
+    </div>
+  <% end %>
+</div>
+
+<div class="mt-16">
+  <.back navigate={~p"/"}>
+    <.icon name="hero-arrow-left" class="w-4 h-4 mr-1" />
+    Back to Home
+  </.back>
+</div>

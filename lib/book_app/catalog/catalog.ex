@@ -20,6 +20,21 @@ defmodule BookApp.Catalog do
   end
 
   @doc """
+  Searches books by summary/description containing the given terms.
+  """
+  def search_books_by_description(search_term) when is_binary(search_term) and search_term != "" do
+    search_pattern = "%#{String.downcase(search_term)}%"
+    
+    Book
+    |> where([b], like(fragment("LOWER(?)", b.summary), ^search_pattern))
+    |> order_by([b], b.title)
+    |> Repo.all()
+    |> Repo.preload([:author, :yearly_sales])
+  end
+
+  def search_books_by_description(_), do: []
+
+  @doc """
   Gets a single book.
   Returns nil if the Book does not exist.
   """

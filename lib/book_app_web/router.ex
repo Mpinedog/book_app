@@ -19,6 +19,7 @@ defmodule BookAppWeb.Router do
 
     get "/", PageController, :home
 
+    get "/books/search", BookController, :search
     resources "/books", BookController
     resources "/authors", AuthorController
     resources "/reviews", ReviewController
