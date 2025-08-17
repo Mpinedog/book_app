@@ -24,7 +24,7 @@ defmodule BookApp.Catalog do
   """
   def search_books_by_description(search_term) when is_binary(search_term) and search_term != "" do
     search_pattern = "%#{String.downcase(search_term)}%"
-    
+
     Book
     |> where([b], like(fragment("LOWER(?)", b.summary), ^search_pattern))
     |> order_by([b], b.title)
@@ -185,4 +185,40 @@ defmodule BookApp.Catalog do
     )
     |> Repo.one()
   end
+
+  def list_yearly_sales_for_book(book_id) do
+    from(ys in BookApp.Catalog.YearlySale,
+      where: ys.book_id == ^book_id,
+      order_by: [desc: ys.year]
+    )
+    |> Repo.all()
+  end
+
+
+  def get_yearly_sale!(id), do: Repo.get!(BookApp.Catalog.YearlySale, id)
+
+
+  def create_yearly_sale(attrs \\ %{}) do
+    %BookApp.Catalog.YearlySale{}
+    |> BookApp.Catalog.YearlySale.changeset(attrs)
+    |> Repo.insert()
+  end
+
+
+  def update_yearly_sale(%BookApp.Catalog.YearlySale{} = yearly_sale, attrs) do
+    yearly_sale
+    |> BookApp.Catalog.YearlySale.changeset(attrs)
+    |> Repo.update()
+  end
+
+
+  def delete_yearly_sale(%BookApp.Catalog.YearlySale{} = yearly_sale) do
+    Repo.delete(yearly_sale)
+  end
+
+
+  def change_yearly_sale(%BookApp.Catalog.YearlySale{} = yearly_sale, attrs \\ %{}) do
+    BookApp.Catalog.YearlySale.changeset(yearly_sale, attrs)
+  end
+
 end

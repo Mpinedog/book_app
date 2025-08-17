@@ -1,0 +1,18 @@
+<.header>
+  Add Yearly Sales for "<%= @book.title %>"
+  <:subtitle>Record sales data for a specific year</:subtitle>
+</.header>
+
+<div class="mt-8 max-w-lg">
+  <.simple_form :let={f} for={@changeset} action={~p"/books/#{@book}/yearly_sales"} class="space-y-6">
+    <.input field={f[:year]} type="number" label="Year" placeholder="2024" />
+    <.input field={f[:sales]} type="number" label="Sales" placeholder="10000" />
+    
+    <:actions>
+      <.button class="btn btn-primary">Save Yearly Sales</.button>
+      <.link navigate={~p"/books/#{@book}/yearly_sales"} class="btn btn-outline">
+        Cancel
+      </.link>
+    </:actions>
+  </.simple_form>
+</div>

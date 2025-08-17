@@ -1,0 +1,18 @@
+<.header>
+  Edit Yearly Sales for "<%= @book.title %>"
+  <:subtitle>Update sales data for <%= @yearly_sale.year %></:subtitle>
+</.header>
+
+<div class="mt-8 max-w-lg">
+  <.simple_form :let={f} for={@changeset} action={~p"/books/#{@book}/yearly_sales/#{@yearly_sale}"} method="put" class="space-y-6">
+    <.input field={f[:year]} type="number" label="Year" />
+    <.input field={f[:sales]} type="number" label="Sales" />
+    
+    <:actions>
+      <.button class="btn btn-primary">Update Yearly Sales</.button>
+      <.link navigate={~p"/books/#{@book}/yearly_sales"} class="btn btn-outline">
+        Cancel
+      </.link>
+    </:actions>
+  </.simple_form>
+</div>
