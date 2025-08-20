@@ -23,11 +23,31 @@ Generación de datos procedurales conforme a la pauta:
 mix ecto.create
 mix ecto.migrate
 mix run priv/repo/seeds.exs
+````
 
-## Learn more
+## Docker & Containerized Setup
 
-* Official website: https://www.phoenixframework.org/
-* Guides: https://hexdocs.pm/phoenix/overview.html
-* Docs: https://hexdocs.pm/phoenix
-* Forum: https://elixirforum.com/c/phoenix-forum
-* Source: https://github.com/phoenixframework/phoenix
+You can run BookApp and its database in containers using Docker and Docker Compose. This setup is also compatible with Red Hat OpenShift.
+
+### Build and Run with Docker Compose
+
+1. Build and start the containers:
+   ```bash
+   docker compose up --build
+   ```
+   This will build the Phoenix app image, run database migrations, seed the database, and start the server on port 4000.
+
+2. Visit [`localhost:4000`](http://localhost:4000) in your browser.
+
+### Environment Variables
+- `SECRET_KEY_BASE` must be set to a secure value (see docker-compose.yml for an example). Generate one with:
+  ```bash
+  mix phx.gen.secret
+  ```
+- `DATABASE_PATH` is set by default for the SQLite file location.
+
+### Notes
+- The database and app run in separate containers, sharing a Docker volume for the SQLite file.
+- On container startup, migrations and seeds are run automatically.
+- For OpenShift, you can convert the Docker Compose setup to Kubernetes/OpenShift manifests using [Kompose](https://kompose.io/).
+
