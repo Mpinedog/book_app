@@ -2,7 +2,7 @@ import Config
 
 # Configure your database
 config :book_app, BookApp.Repo,
-  database: Path.expand("../book_app_dev.db", __DIR__),
+  database: System.get_env("DATABASE_PATH") || Path.expand("../book_app_dev.db", __DIR__),
   pool_size: 5,
   stacktrace: true,
   show_sensitive_data_on_connection_error: true

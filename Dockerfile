@@ -5,6 +5,8 @@ WORKDIR /app
 RUN apk add --no-cache build-base git npm sqlite-dev
 
 ENV MIX_ENV=prod
+ENV HEX_HTTP_CONCURRENCY=1
+ENV HEX_HTTP_TIMEOUT=120
 
 RUN mix local.hex --force && mix local.rebar --force
 
@@ -34,4 +36,6 @@ COPY --from=build /app/_build/prod/rel/book_app ./
 ENV HOME=/app
 ENV MIX_ENV=prod
 
-CMD bin/book_app eval "BookApp.Release.migrate_and_seed()" && bin/book_app start
+CMD bin/book_app eval "BookApp.Release.migrate_and_seed()" && \
+	echo "\nApp running at http://localhost:4000\n" && \
+	bin/book_app start
