@@ -1,0 +1,23 @@
+{
+	"apps": {
+		"http": {
+			"servers": {
+				"example": {
+					"listen": [":2015"],
+					"routes": [
+						{
+							"handle": [
+								{
+									"handler": "reverse_proxy",
+									"upstreams": [
+										{ "dial": "app:4000" }
+									]
+								}
+							]
+						}
+					]
+				}
+			}
+		}
+	}
+}

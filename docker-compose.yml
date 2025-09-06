@@ -20,6 +20,16 @@ services:
     volumes:
       - db_data:/db
     # Mount the same volume so the app can access the SQLite file
+  
+  caddy:
+    image: caddy:2
+    ports:
+      - "2015:2015"
+    volumes:
+      - ./caddy.json:/etc/caddy/caddy.json
+    depends_on:
+      - app
+    command: caddy run --config /etc/caddy/caddy.json
 
 volumes:
   db_data:
