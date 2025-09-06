@@ -1,23 +1,67 @@
 {
-	"apps": {
-		"http": {
-			"servers": {
-				"example": {
-					"listen": [":2015"],
-					"routes": [
-						{
-							"handle": [
-								{
-									"handler": "reverse_proxy",
-									"upstreams": [
-										{ "dial": "app:4000" }
-									]
-								}
-							]
-						}
-					]
-				}
-			}
-		}
-	}
+  "apps": {
+    "http": {
+      "servers": {
+        "example": {
+          "listen": [":2015"],
+          "routes": [
+            {
+              "match": [
+                { "path": ["/uploads/*"] }
+              ],
+              "handle": [
+                {
+                  "handler": "file_server",
+                  "root": "/root/projects/book_app/priv/static"
+                }
+              ]
+            },
+            {
+              "match": [
+                { "path": ["/assets/*"] }
+              ],
+              "handle": [
+                {
+                  "handler": "file_server",
+                  "root": "/root/projects/book_app/priv/static"
+                }
+              ]
+            },
+            {
+              "match": [
+                { "path": ["/icons/*"] }
+              ],
+              "handle": [
+                {
+                  "handler": "file_server",
+                  "root": "/root/projects/book_app/priv/static"
+                }
+              ]
+            },
+            {
+              "match": [
+                { "path": ["/fonts/*"] }
+              ],
+              "handle": [
+                {
+                  "handler": "file_server",
+                  "root": "/root/projects/book_app/priv/static"
+                }
+              ]
+            },
+            {
+              "handle": [
+                {
+                  "handler": "reverse_proxy",
+                  "upstreams": [
+                    { "dial": "app:4000" }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      }
+    }
+  }
 }

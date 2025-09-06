@@ -31,6 +31,8 @@ config :book_app, BookAppWeb.Endpoint,
 # at the `config/runtime.exs`.
 config :book_app, BookApp.Mailer, adapter: Swoosh.Adapters.Local
 
+config :book_app, :image_storage_path, System.get_env("IMAGE_STORAGE_PATH") || "priv/static/uploads"
+
 # Configure esbuild (the version is required)
 config :esbuild,
   version: "0.25.4",

@@ -7,6 +7,7 @@ defmodule BookApp.Authors.Author do
     field :description, :string
     field :birth_date, :date
     field :country, :string
+    field :photo_path, :string
 
     has_many :books, BookApp.Catalog.Book
 
@@ -16,7 +17,7 @@ defmodule BookApp.Authors.Author do
   @doc false
   def changeset(author, attrs) do
     author
-    |> cast(attrs, [:name, :description, :birth_date, :country])
+    |> cast(attrs, [:name, :description, :birth_date, :country, :photo_path])
     |> validate_required([:name])
     |> unique_constraint(:name)
   end

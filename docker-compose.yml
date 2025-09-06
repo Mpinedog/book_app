@@ -13,6 +13,7 @@ services:
       - DATABASE_PATH=/db/book_app_dev.db
       - PHX_SERVER=true
       - SECRET_KEY_BASE=pdNRKWTzPe8IGmeqcFhP6IibMjnfRBGDlukkYAcnD1AuVC7et59EWMXKMvrWUONa
+      - SERVE_STATIC_ASSETS=false 
     ports:
       - "4000:4000"
     depends_on:
