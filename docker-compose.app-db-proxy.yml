@@ -1,0 +1,36 @@
+version: '3.8'
+services:
+  db:
+    image: alpine:3.19.1
+    command: ["sh", "-c", "touch /db/book_app_dev.db && tail -f /dev/null"]
+    volumes:
+      - db_data:/db
+    # Expose the DB file as a volume for the app to access
+
+  app:
+    build: .
+    environment:
+      - DATABASE_PATH=/db/book_app_dev.db
+      - PHX_SERVER=true
+      - SECRET_KEY_BASE=pdNRKWTzPe8IGmeqcFhP6IibMjnfRBGDlukkYAcnD1AuVC7et59EWMXKMvrWUONa
+      - SERVE_STATIC_ASSETS=false 
+    ports:
+      - "4000:4000"
+    depends_on:
+      - db
+    volumes:
+      - db_data:/db
+    # Mount the same volume so the app can access the SQLite file
+  
+  caddy:
+    image: caddy:2
+    ports:
+      - "2015:2015"
+    volumes:
+      - ./caddy.json:/etc/caddy/caddy.json
+    depends_on:
+      - app
+    command: caddy run --config /etc/caddy/caddy.json
+
+volumes:
+  db_data:

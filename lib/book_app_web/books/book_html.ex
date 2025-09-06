@@ -30,6 +30,8 @@ defmodule BookAppWeb.BookHTML do
       <.input field={f[:summary]} type="textarea" label="Summary" required />
       <.input field={f[:published_on]} type="date" label="Publication Date" required />
       <.input field={f[:author_id]} type="select" label="Author" required options={Enum.map(@authors, &{&1.name, &1.id})} />
+      <.input field={f[:cover_image]} type="file" label="Book Cover" />
+
 
       <:actions>
         <.button type="submit" class="btn-primary">Save Book</.button>

@@ -26,6 +26,13 @@ defmodule BookAppWeb.Endpoint do
     gzip: not code_reloading?,
     only: BookAppWeb.static_paths()
 
+  if System.get_env("SERVE_STATIC_ASSETS", "true") == "true" do
+    plug Plug.Static,
+      at: "/uploads",
+      from: Application.get_env(:book_app, :image_storage_path),
+      gzip: false
+  end
+
   # Code reloading can be explicitly enabled under the
   # :code_reloader configuration of your endpoint.
   if code_reloading? do

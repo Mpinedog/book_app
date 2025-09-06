@@ -29,15 +29,24 @@ mix run priv/repo/seeds.exs
 
 You can run BookApp and its database in containers using Docker and Docker Compose. This setup is also compatible with Red Hat OpenShift.
 
+
 ### Build and Run with Docker Compose
 
-1. Build and start the containers:
-   ```bash
-   docker compose up --build
-   ```
-   This will build the Phoenix app image, run database migrations, seed the database, and start the server on port 4000.
+#### How to use multiple deployment scenarios
 
-2. Visit [`localhost:4000`](http://localhost:4000) in your browser.
+- **For app + db:**
+  ```bash
+  docker compose -f docker-compose.app-db.yml up --build
+  ```
+
+- **For app + db + reverse proxy:**
+  ```bash
+  docker compose -f docker-compose.app-db-proxy.yml up --build
+  ```
+
+This will build the Phoenix app image, run database migrations, seed the database, and start the server on port 4000 (or behind the reverse proxy).
+
+Visit [`localhost:4000`](http://localhost:4000) (or the port exposed by your reverse proxy) in your browser.
 
 ### Environment Variables
 - `SECRET_KEY_BASE` must be set to a secure value (see docker-compose.yml for an example). Generate one with:

@@ -20,6 +20,19 @@ defmodule BookAppWeb.AuthorController do
   end
 
   def create(conn, %{"author" => author_params}) do
+    upload = author_params["photo"]
+    image_storage_path = Application.get_env(:book_app, :image_storage_path)
+
+    author_params =
+      if is_map(upload) and Map.has_key?(upload, :filename) and Map.has_key?(upload, :path) do
+        filename = "#{:erlang.unique_integer([:positive])}_#{upload.filename}"
+        dest_path = Path.join(image_storage_path, filename)
+        File.cp(upload.path, dest_path)
+        Map.put(author_params, "photo_path", "/uploads/#{filename}")
+      else
+        author_params
+      end
+
     case Authors.create_author(author_params) do
       {:ok, author} ->
         conn
@@ -30,14 +43,21 @@ defmodule BookAppWeb.AuthorController do
     end
   end
 
-  def edit(conn, %{"id" => id}) do
-    author = Authors.get_author!(id)
-    changeset = Author.changeset(author, %{})
-    render(conn, :edit, author: author, changeset: changeset)
-  end
-
   def update(conn, %{"id" => id, "author" => author_params}) do
     author = Authors.get_author!(id)
+    upload = author_params["photo"]
+    image_storage_path = Application.get_env(:book_app, :image_storage_path)
+
+    author_params =
+      if is_map(upload) and Map.has_key?(upload, :filename) and Map.has_key?(upload, :path) do
+        filename = "#{:erlang.unique_integer([:positive])}_#{upload.filename}"
+        dest_path = Path.join(image_storage_path, filename)
+        File.cp(upload.path, dest_path)
+        Map.put(author_params, "photo_path", "/uploads/#{filename}")
+      else
+        author_params
+      end
+
     case Authors.update_author(author, author_params) do
       {:ok, author} ->
         conn

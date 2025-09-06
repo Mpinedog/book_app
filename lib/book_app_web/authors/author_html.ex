@@ -15,6 +15,7 @@ defmodule BookAppWeb.AuthorHTML do
           <.input field={f[:description]} type="textarea" label="Description" />
           <.input field={f[:birth_date]} type="date" label="Birth Date" required />
           <.input field={f[:country]} type="text" label="Country" />
+          <.input field={f[:photo]} type="file" label="Author Photo" />
           <:actions>
             <.button phx-disable-with="Saving...">Save Author</.button>
           </:actions>
