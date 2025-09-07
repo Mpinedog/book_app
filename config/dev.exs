@@ -60,6 +60,9 @@ config :book_app, BookAppWeb.Endpoint,
     ]
   ]
 
+  # config/dev.exs
+config :book_app, :image_storage_path, "priv/static/uploads"
+
 # Enable dev routes for dashboard and mailbox
 config :book_app, dev_routes: true
 

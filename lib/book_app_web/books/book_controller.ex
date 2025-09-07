@@ -18,12 +18,12 @@ defmodule BookAppWeb.BookController do
 
   def create(conn, %{"book" => book_params}) do
     upload = book_params["cover_image"]
-    image_storage_path = Application.get_env(:book_app, :image_storage_path)
 
     book_params =
       if is_map(upload) and Map.has_key?(upload, :filename) and Map.has_key?(upload, :path) do
+        storage_path = Application.get_env(:book_app, :image_storage_path) || "priv/static/uploads"
         filename = "#{:erlang.unique_integer([:positive])}_#{upload.filename}"
-        dest_path = Path.join(image_storage_path, filename)
+        dest_path = Path.join(storage_path, filename)
         File.cp(upload.path, dest_path)
         Map.put(book_params, "cover_image_path", "/uploads/#{filename}")
       else

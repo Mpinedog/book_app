@@ -18,6 +18,13 @@
 
 <div class="max-w-xl mx-auto mt-8 card bg-base-100 shadow-xl">
   <div class="card-body">
+    <div class="mb-6 flex justify-center">
+      <%= if @author.photo_path do %>
+        <img src={@author.photo_path} alt="Author photo" class="rounded-lg max-h-48 max-w-xs object-cover" />
+      <% else %>
+        <span class="text-base-content/50 italic">No image</span>
+      <% end %>
+    </div>
     <div class="mb-4">
       <div class="text-base-content/70 mb-2"><strong>Description:</strong></div>
       <div class="text-base-content"><%= @author.description %></div>
