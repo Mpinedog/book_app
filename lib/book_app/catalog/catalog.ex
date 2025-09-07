@@ -21,15 +21,23 @@ defmodule BookApp.Catalog do
 
   @doc """
   Searches books by summary/description containing the given terms.
+  Uses OpenSearch for full-text search with fallback to database.
   """
   def search_books_by_description(search_term) when is_binary(search_term) and search_term != "" do
-    search_pattern = "%#{String.downcase(search_term)}%"
+    # Try OpenSearch first
+    case BookApp.Search.search_books(search_term) do
+      [] -> 
+        # Fallback to original database search
+        search_pattern = "%#{String.downcase(search_term)}%"
 
-    Book
-    |> where([b], like(fragment("LOWER(?)", b.summary), ^search_pattern))
-    |> order_by([b], b.title)
-    |> Repo.all()
-    |> Repo.preload([:author, :yearly_sales])
+        Book
+        |> where([b], like(fragment("LOWER(?)", b.summary), ^search_pattern))
+        |> order_by([b], b.title)
+        |> Repo.all()
+        |> Repo.preload([:author, :yearly_sales])
+      
+      results -> results
+    end
   end
 
   def search_books_by_description(_), do: []
@@ -58,25 +66,46 @@ defmodule BookApp.Catalog do
   Creates a book.
   """
   def create_book(attrs \\ %{}) do
-    %Book{}
-    |> Book.changeset(attrs)
-    |> Repo.insert()
+    case %Book{}
+         |> Book.changeset(attrs)
+         |> Repo.insert() do
+      {:ok, book} = result ->
+        # Index the new book in OpenSearch
+        Task.start(fn -> BookApp.Search.index_book(book) end)
+        result
+      
+      error -> error
+    end
   end
 
   @doc """
   Updates a book.
   """
   def update_book(%Book{} = book, attrs) do
-    book
-    |> Book.changeset(attrs)
-    |> Repo.update()
+    case book
+         |> Book.changeset(attrs)
+         |> Repo.update() do
+      {:ok, updated_book} = result ->
+        # Re-index the updated book in OpenSearch
+        Task.start(fn -> BookApp.Search.index_book(updated_book) end)
+        result
+      
+      error -> error
+    end
   end
 
   @doc """
   Deletes a book.
   """
   def delete_book(%Book{} = book) do
-    Repo.delete(book)
+    case Repo.delete(book) do
+      {:ok, deleted_book} = result ->
+        # Remove from OpenSearch index
+        Task.start(fn -> BookApp.Search.delete_book_from_index(deleted_book.id) end)
+        result
+      
+      error -> error
+    end
   end
 
   @doc """
@@ -112,25 +141,55 @@ defmodule BookApp.Catalog do
   Creates a review.
   """
   def create_review(attrs \\ %{}) do
-    %Review{}
-    |> Review.changeset(attrs)
-    |> Repo.insert()
+    case %Review{}
+         |> Review.changeset(attrs)
+         |> Repo.insert() do
+      {:ok, review} = result ->
+        # Re-index the book in OpenSearch since reviews are part of the search index
+        if review.book_id do
+          book = get_book!(review.book_id)
+          Task.start(fn -> BookApp.Search.index_book(book) end)
+        end
+        result
+      
+      error -> error
+    end
   end
 
   @doc """
   Updates a review.
   """
   def update_review(%Review{} = review, attrs) do
-    review
-    |> Review.changeset(attrs)
-    |> Repo.update()
+    case review
+         |> Review.changeset(attrs)
+         |> Repo.update() do
+      {:ok, updated_review} = result ->
+        # Re-index the book in OpenSearch since reviews are part of the search index
+        if updated_review.book_id do
+          book = get_book!(updated_review.book_id)
+          Task.start(fn -> BookApp.Search.index_book(book) end)
+        end
+        result
+      
+      error -> error
+    end
   end
 
   @doc """
   Deletes a review.
   """
   def delete_review(%Review{} = review) do
-    Repo.delete(review)
+    case Repo.delete(review) do
+      {:ok, deleted_review} = result ->
+        # Re-index the book in OpenSearch since reviews are part of the search index
+        if deleted_review.book_id do
+          book = get_book!(deleted_review.book_id)
+          Task.start(fn -> BookApp.Search.index_book(book) end)
+        end
+        result
+      
+      error -> error
+    end
   end
 
   @doc """

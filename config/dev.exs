@@ -83,3 +83,15 @@ config :phoenix_live_view,
 
 # Disable swoosh api client as it is only required for production adapters.
 config :swoosh, :api_client, false
+
+# OpenSearch configuration for development (using Elasticsearch client)
+config :elasticsearch,
+  clusters: %{
+    default: [
+      url: "http://localhost:9200",
+      api: Elasticsearch.API.HTTP,
+      json_library: Jason,
+      timeout: 5000,
+      recv_timeout: 10000
+    ]
+  }

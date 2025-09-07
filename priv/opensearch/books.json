@@ -1,0 +1,62 @@
+{
+  "settings": {
+    "number_of_shards": 1,
+    "number_of_replicas": 0,
+    "analysis": {
+      "analyzer": {
+        "book_analyzer": {
+          "type": "custom",
+          "tokenizer": "standard",
+          "filter": [
+            "lowercase",
+            "stop",
+            "snowball"
+          ]
+        }
+      }
+    }
+  },
+  "mappings": {
+    "properties": {
+      "id": {
+        "type": "integer"
+      },
+      "title": {
+        "type": "text",
+        "analyzer": "book_analyzer",
+        "boost": 2.0
+      },
+      "summary": {
+        "type": "text",
+        "analyzer": "book_analyzer"
+      },
+      "author_name": {
+        "type": "text",
+        "analyzer": "book_analyzer",
+        "boost": 1.5
+      },
+      "author_description": {
+        "type": "text",
+        "analyzer": "book_analyzer"
+      },
+      "published_on": {
+        "type": "date"
+      },
+      "lifetime_sales": {
+        "type": "integer"
+      },
+      "reviews": {
+        "type": "nested",
+        "properties": {
+          "body": {
+            "type": "text",
+            "analyzer": "book_analyzer"
+          },
+          "score": {
+            "type": "integer"
+          }
+        }
+      }
+    }
+  }
+}

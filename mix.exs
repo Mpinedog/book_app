@@ -60,7 +60,8 @@ defmodule BookApp.MixProject do
       {:jason, "~> 1.2"},
       {:dns_cluster, "~> 0.2.0"},
       {:bandit, "~> 1.5"},
-      {:faker, "~> 0.18"}
+      {:faker, "~> 0.18"},
+      {:elasticsearch, "~> 1.0"}
     ]
   end
 

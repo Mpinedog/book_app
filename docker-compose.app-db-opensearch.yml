@@ -1,0 +1,66 @@
+services:
+  opensearch:
+    image: opensearchproject/opensearch:2.11.1
+    container_name: opensearch
+    environment:
+      - cluster.name=opensearch-cluster
+      - node.name=opensearch
+      - discovery.seed_hosts=opensearch
+      - cluster.initial_cluster_manager_nodes=opensearch
+      - bootstrap.memory_lock=true
+      - "OPENSEARCH_JAVA_OPTS=-Xms512m -Xmx512m"
+      - "DISABLE_INSTALL_DEMO_CONFIG=true"
+      - "DISABLE_SECURITY_PLUGIN=true"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+      nofile:
+        soft: 65536
+        hard: 65536
+    volumes:
+      - opensearch_data:/usr/share/opensearch/data
+    ports:
+      - "9200:9200"
+      - "9600:9600"
+    networks:
+      - opensearch-net
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:9200/_cluster/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  db:
+    image: alpine:3.19.1
+    command: ["sh", "-c", "touch /db/book_app_dev.db && tail -f /dev/null"]
+    volumes:
+      - db_data:/db
+    networks:
+      - opensearch-net
+
+  app:
+    build: .
+    environment:
+      - DATABASE_PATH=/db/book_app_dev.db
+      - PHX_SERVER=true
+      - SECRET_KEY_BASE=pdNRKWTzPe8IGmeqcFhP6IibMjnfRBGDlukkYAcnD1AuVC7et59EWMXKMvrWUONa
+      - OPENSEARCH_URL=http://opensearch:9200
+    ports:
+      - "4000:4000"
+    depends_on:
+      opensearch:
+        condition: service_healthy
+      db:
+        condition: service_started
+    volumes:
+      - db_data:/db
+    networks:
+      - opensearch-net
+
+volumes:
+  db_data:
+  opensearch_data:
+
+networks:
+  opensearch-net:

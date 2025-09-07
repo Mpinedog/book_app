@@ -60,6 +60,25 @@ config :logger, :default_formatter,
 # Use Jason for JSON parsing in Phoenix
 config :phoenix, :json_library, Jason
 
+# Configure OpenSearch (using Elasticsearch client library for compatibility)
+config :elasticsearch,
+  clusters: %{
+    default: [
+      url: "http://localhost:9200",
+      api: Elasticsearch.API.HTTP,
+      json_library: Jason,
+      timeout: 5000,
+      recv_timeout: 10000
+    ]
+  },
+  indexes: %{
+    books: %{
+      settings: "priv/opensearch/books.json",
+      store: BookApp.Search.BookStore,
+      sources: [BookApp.Catalog.Book]
+    }
+  }
+
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
 import_config "#{config_env()}.exs"

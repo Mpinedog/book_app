@@ -20,6 +20,22 @@ if System.get_env("PHX_SERVER") do
   config :book_app, BookAppWeb.Endpoint, server: true
 end
 
+# Configure OpenSearch for all environments when OPENSEARCH_URL is set
+opensearch_url = System.get_env("OPENSEARCH_URL")
+
+if opensearch_url do
+  config :elasticsearch,
+    clusters: %{
+      default: [
+        url: opensearch_url,
+        api: Elasticsearch.API.HTTP,
+        json_library: Jason,
+        timeout: 10000,
+        recv_timeout: 15000
+      ]
+    }
+end
+
 if config_env() == :prod do
   database_path =
     System.get_env("DATABASE_PATH") ||

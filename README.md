@@ -9,6 +9,45 @@ Now you can visit [`localhost:4000`](http://localhost:4000) from your browser.
 
 Ready to run in production? Please [check our deployment guides](https://hexdocs.pm/phoenix/deployment.html).
 
+## Search with OpenSearch
+
+BookApp includes full-text search capabilities using OpenSearch.
+
+### Features
+- Full-text search across book titles, summaries, author names and descriptions, and review content
+- Fuzzy matching for typos
+- Weighted results (titles and author names have higher relevance)
+- Automatic index synchronization when books/reviews are created, updated, or deleted
+- Fallback to database search if OpenSearch is unavailable
+
+### Setup
+
+#### Local Development
+1. Install and run OpenSearch locally:
+   ```bash
+   # Using Docker
+   docker run -d --name opensearch -p 9200:9200 -p 9600:9600 -e "discovery.type=single-node" -e "DISABLE_SECURITY_PLUGIN=true" opensearchproject/opensearch:2.11.1
+   ```
+
+2. Setup the search index:
+   ```bash
+   mix search.setup
+   ```
+
+3. To rebuild the index (if needed):
+   ```bash
+   mix search.setup --rebuild
+   ```
+
+#### Using Docker Compose
+- **For app + db + OpenSearch:**
+  ```bash
+  docker compose -f docker-compose.app-db-opensearch.yml up --build
+  ```
+
+### Environment Variables
+- `OPENSEARCH_URL`: OpenSearch URL (default: http://localhost:9200)
+
 ## Mock Data (seeds)
 Generación de datos procedurales conforme a la pauta:
 
