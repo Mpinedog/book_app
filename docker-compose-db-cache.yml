@@ -1,0 +1,43 @@
+version: '3.8'
+
+services:
+  web:
+    build:
+      context: .
+      target: dev
+      args:
+        MIX_ENV: dev
+    ports:
+      - "4000:4000"
+    environment:
+      - REDIS_URL=redis://redis:6379
+      - PHX_HOST=localhost
+      - PORT=4000
+      - MIX_ENV=dev
+    depends_on:
+      - redis
+    volumes:
+      - .:/app
+      - /app/_build
+      - /app/deps
+      - sqlite_data:/app/priv/repo
+    stdin_open: true
+    tty: true
+    command: >
+      sh -c "mix ecto.migrate && mix run priv/repo/seeds.exs && mix phx.server"
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    command: redis-server --appendonly yes --requirepass ""
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      timeout: 20s
+      retries: 10
+
+volumes:
+  sqlite_data:
+  redis_data:

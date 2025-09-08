@@ -7,6 +7,11 @@ import Config
 # before starting your production server.
 config :book_app, BookAppWeb.Endpoint, cache_static_manifest: "priv/static/cache_manifest.json"
 
+# Configure Redis cache for production
+config :book_app,
+  cache_adapter: :redis,
+  redis_url: System.get_env("REDIS_URL", "redis://redis:6379")
+
 # Configures Swoosh API Client
 config :swoosh, api_client: Swoosh.ApiClient.Req
 

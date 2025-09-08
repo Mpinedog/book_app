@@ -11,6 +11,10 @@ config :book_app,
   ecto_repos: [BookApp.Repo],
   generators: [timestamp_type: :utc_datetime]
 
+config :book_app,
+  cache_adapter: :redis,
+  redis_url: System.get_env("REDIS_URL", "redis://localhost:6379")
+
 # Configures the endpoint
 config :book_app, BookAppWeb.Endpoint,
   url: [host: "localhost"],
