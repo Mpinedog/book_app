@@ -63,9 +63,13 @@ BookApp is a Phoenix application with full-text search powered by OpenSearch, su
 
 ### Docker Compose Scenarios
 
-Choose the scenario that fits your needs:
+
+
+You can run BookApp in several different configurations using Docker Compose. Choose the scenario that fits your needs:
 
 #### 1. App + DB
+
+Runs the Phoenix application and the database (SQLite). This is the minimal setup for local development.
 
 ```bash
 docker compose -f docker-compose.app-db.yml up --build
@@ -73,18 +77,51 @@ docker compose -f docker-compose.app-db.yml up --build
 
 #### 2. App + DB + OpenSearch
 
+Runs the Phoenix application, the database, and OpenSearch for full-text search capabilities.
+
 ```bash
 docker compose -f docker-compose.app-db-opensearch.yml up --build
 ```
 
 #### 3. App + DB + Reverse Proxy
 
+Runs the Phoenix application, the database, and a reverse proxy (Caddy) for routing and static asset serving.
+
 ```bash
 docker compose -f docker-compose.app-db-proxy.yml up --build
 ```
 
-- This will build the app, run migrations, seed the DB, and start the server (port 4000 or behind the proxy).
-- Visit [http://localhost:4000](http://localhost:4000) or the proxy’s exposed port.
+- Visit [http://localhost:2015](http://localhost:2015) for the proxy’s exposed port.
+
+#### 4. App + DB + OpenSearch + Reverse Proxy
+
+Runs the Phoenix application, the database, OpenSearch, and a reverse proxy (Caddy) for a full production-like stack.
+
+```bash
+docker compose -f docker-compose.app-db-opensearch-proxy.yml up --build
+```
+
+#### 5. App + DB + Cache (Redis)
+
+Runs the Phoenix application, the database, and a Redis cache for development or testing caching strategies.
+
+```bash
+docker compose -f docker-compose-db-cache.yml up --build
+```
+
+#### 6. App + DB + OpenSearch + Reverse Proxy + Cache (Redis)
+
+Runs the Phoenix application, the database, OpenSearch, a reverse proxy (Caddy), and Redis cache for a comprehensive stack with search, caching, and proxying.
+
+```bash
+docker compose -f docker-compose.app-db-proxy-cache-opensearch.yml up --build
+```
+
+---
+
+- Each scenario will build the app, run migrations, seed the database, and start the server (on port 4000 or behind the proxy).
+- Visit [http://localhost:4000](http://localhost:4000) or the proxy’s exposed port as appropriate [http://localhost:2015](http://localhost:2015).
+- You can customize environment variables as needed for each scenario.
 
 ---
 
