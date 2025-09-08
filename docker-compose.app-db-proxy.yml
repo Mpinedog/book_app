@@ -13,12 +13,15 @@ services:
       - DATABASE_PATH=/db/book_app_dev.db
       - PHX_SERVER=true
       - SECRET_KEY_BASE=pdNRKWTzPe8IGmeqcFhP6IibMjnfRBGDlukkYAcnD1AuVC7et59EWMXKMvrWUONa
+      - SERVE_STATIC_ASSETS=false
+      - IMAGE_STORAGE_PATH=priv/static/uploads
     ports:
       - "4000:4000"
     depends_on:
       - db
     volumes:
       - db_data:/db
+      - uploads_data:/app/priv/static/uploads
     # Mount the same volume so the app can access the SQLite file
   
   caddy:
@@ -27,9 +30,11 @@ services:
       - "2015:2015"
     volumes:
       - ./caddy.json:/etc/caddy/caddy.json
+      - uploads_data:/root/projects/book_app/priv/static/uploads
     depends_on:
       - app
     command: caddy run --config /etc/caddy/caddy.json
 
 volumes:
   db_data:
+  uploads_data:

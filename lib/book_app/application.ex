@@ -14,6 +14,11 @@ defmodule BookApp.Application do
        repos: Application.fetch_env!(:book_app, :ecto_repos), skip: skip_migrations?()},
       {DNSCluster, query: Application.get_env(:book_app, :dns_cluster_query) || :ignore},
       {Phoenix.PubSub, name: BookApp.PubSub},
+      %{
+        id: BookApp.Cache,
+        start: {BookApp.Cache, :start_link, [[]]},
+        restart: :temporary
+      },
       # Start a worker by calling: BookApp.Worker.start_link(arg)
       # {BookApp.Worker, arg},
       # Start to serve requests, typically the last entry

@@ -25,11 +25,13 @@ defmodule BookAppWeb.BookHTML do
 
   def book_form(assigns) do
     ~H"""
-    <.simple_form :let={f} for={@changeset} action={@action} class="space-y-8">
+    <.simple_form :let={f} for={@changeset} action={@action} class="space-y-8" enctype="multipart/form-data">
       <.input field={f[:title]} type="text" label="Title" required />
       <.input field={f[:summary]} type="textarea" label="Summary" required />
       <.input field={f[:published_on]} type="date" label="Publication Date" required />
       <.input field={f[:author_id]} type="select" label="Author" required options={Enum.map(@authors, &{&1.name, &1.id})} />
+      <.input field={f[:cover_image]} type="file" label="Book Cover" />
+
 
       <:actions>
         <.button type="submit" class="btn-primary">Save Book</.button>
