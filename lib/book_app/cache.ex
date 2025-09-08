@@ -29,10 +29,11 @@ defmodule BookApp.Cache do
         Logger.info("Redis cache started successfully at #{redis_url}")
         {:ok, pid}
       {:error, reason} ->
-        Logger.error("Failed to start Redis cache: #{inspect(reason)}")
-        {:error, reason}
+        Logger.warning("Redis not available, running without cache: #{inspect(reason)}")
+        {:ok, :no_redis}
     end
-  end  # Cache operations
+  end
+
   def safe_get(key, fallback_fn \\ fn -> nil end) do
     case get_from_redis(key) do
       nil -> fallback_fn.()
