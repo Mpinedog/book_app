@@ -67,7 +67,7 @@
 
           <div class="mb-4 flex justify-center">
             <%= if @book.cover_image_path do %>
-              <img src={@book.cover_image_path} alt="Book cover" class="rounded-lg max-h-48 max-w-xs object-cover" />
+              <img src={"#{@asset_host}#{@book.cover_image_path}"} alt="Book cover" class="rounded-lg max-h-48 max-w-xs object-cover" />
             <% else %>
               <span class="text-base-content/50 italic">No image</span>
             <% end %>

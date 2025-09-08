@@ -13,13 +13,17 @@ services:
       - DATABASE_PATH=/db/book_app_dev.db
       - PHX_SERVER=true
       - SECRET_KEY_BASE=pdNRKWTzPe8IGmeqcFhP6IibMjnfRBGDlukkYAcnD1AuVC7et59EWMXKMvrWUONa
+      - SERVE_STATIC_ASSETS=true
+      - IMAGE_STORAGE_PATH=priv/static/uploads
     ports:
       - "4000:4000"
     depends_on:
       - db
     volumes:
       - db_data:/db
+      - uploads_data:/app/priv/static/uploads
     # Mount the same volume so the app can access the SQLite file
 
 volumes:
   db_data:
+  uploads_data:

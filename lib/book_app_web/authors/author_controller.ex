@@ -11,7 +11,14 @@ defmodule BookAppWeb.AuthorController do
 
   def show(conn, %{"id" => id}) do
     author = Authors.get_author!(id)
-    render(conn, :show, author: author)
+    asset_host =
+      if System.get_env("SERVE_STATIC_ASSETS", "true") == "true" do
+        "http://localhost:4000"
+      else
+        "http://localhost:2015"
+      end
+
+    render(conn, :show, author: author, asset_host: asset_host)
   end
 
   def new(conn, _params) do

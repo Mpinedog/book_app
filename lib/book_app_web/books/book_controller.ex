@@ -44,7 +44,14 @@ defmodule BookAppWeb.BookController do
 
   def show(conn, %{"id" => id}) do
     book = Catalog.get_book!(id)
-    render(conn, :show, book: book)
+    asset_host =
+      if System.get_env("SERVE_STATIC_ASSETS", "true") == "true" do
+        "http://localhost:4000"
+      else
+        "http://localhost:2015"
+      end
+
+    render(conn, :show, book: book, asset_host: asset_host)
   end
 
   def edit(conn, %{"id" => id}) do

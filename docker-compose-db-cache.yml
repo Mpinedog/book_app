@@ -14,6 +14,8 @@ services:
       - PHX_HOST=localhost
       - PORT=4000
       - MIX_ENV=dev
+      - SERVE_STATIC_ASSETS=false
+      - IMAGE_STORAGE_PATH=priv/static/uploads
     depends_on:
       - redis
     volumes:
@@ -21,6 +23,7 @@ services:
       - /app/_build
       - /app/deps
       - sqlite_data:/app/priv/repo
+      - uploads_data:/app/priv/static/uploads
     stdin_open: true
     tty: true
     command: >
@@ -41,3 +44,4 @@ services:
 volumes:
   sqlite_data:
   redis_data:
+  uploads_data:

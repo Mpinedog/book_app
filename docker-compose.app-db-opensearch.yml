@@ -46,6 +46,8 @@ services:
       - PHX_SERVER=true
       - SECRET_KEY_BASE=pdNRKWTzPe8IGmeqcFhP6IibMjnfRBGDlukkYAcnD1AuVC7et59EWMXKMvrWUONa
       - OPENSEARCH_URL=http://opensearch:9200
+      - SERVE_STATIC_ASSETS=true
+      - IMAGE_STORAGE_PATH=priv/static/uploads
     ports:
       - "4000:4000"
     depends_on:
@@ -55,11 +57,13 @@ services:
         condition: service_started
     volumes:
       - db_data:/db
+      - uploads_data:/app/priv/static/uploads
     networks:
       - opensearch-net
 
 volumes:
   db_data:
+  uploads_data:
   opensearch_data:
 
 networks:
